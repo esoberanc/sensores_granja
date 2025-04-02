@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 import requests
 
 app = Flask(__name__)
-
+CORS(app)  
 API_KEY = "9290a4d061c3c77a15978928b4eb8ff119b4aec2"
 ORG_ID = "1654515"
 TARGET_SERIAL = "Q3CA-AT85-YJMB"  # Reemplaza si quieres otro
