@@ -1,37 +1,36 @@
+
+import os
 from flask import Flask, jsonify
-from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-CORS(app)  # Habilita CORS
 
-MERAKI_API_KEY = "9290a4d061c3c77a15978928b4eb8ff119b4aec2"
-ORGANIZATION_ID = "1654515"
-SENSOR_SERIAL = "Q3CA-AT85-YJMB"
+API_KEY = "TU_API_KEY"
+ORG_ID = "TU_ORG_ID"
+TARGET_SERIAL = "Q3CA-AT85-YJMB"  # Reemplaza si quieres otro
 
 @app.route("/sensor-data")
 def get_sensor_data():
-    url = f"https://api.meraki.com/api/v1/organizations/{ORGANIZATION_ID}/sensor/readings/latest"
+    url = f"https://api.meraki.com/api/v1/organizations/{ORG_ID}/sensor/readings/latest"
     headers = {
-        "X-Cisco-Meraki-API-Key": MERAKI_API_KEY,
+        "X-Cisco-Meraki-API-Key": API_KEY,
         "Content-Type": "application/json"
     }
 
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        data = response.json()
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    data = response.json()
 
-        for sensor in data:
-            if sensor["serial"] == SENSOR_SERIAL:
-                for reading in sensor["readings"]:
-                    if reading["metric"] == "temperature":
-                        temp = reading["temperature"]["celsius"]
-                        return jsonify({"temperature": temp})
-        return jsonify({"error": "Temperatura no encontrada"}), 404
+    for device in data:
+        if device["serial"] == TARGET_SERIAL:
+            for reading in device["readings"]:
+                if reading["metric"] == "temperature":
+                    return jsonify({
+                        "celsius": reading["temperature"]["celsius"]
+                    })
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "No temperature data found"}), 404
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
