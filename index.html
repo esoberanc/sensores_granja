@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Temperatura Meraki</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen text-center">
+
+  <h1 class="text-2xl font-bold mb-6">🌡 Temperatura del Sensor Meraki MT10</h1>
+
+  <div id="temperature" class="text-4xl font-semibold mb-4">Cargando...</div>
+
+  <img id="logo" src="logo-verde.png" alt="Edge Farming Logo" class="w-32 h-32 transition-all duration-500" />
+
+  <script>
+    async function getTemperature() {
+      try {
+        const response = await fetch("http://localhost:5000/sensor-data");
+        const data = await response.json();
+        const temp = data.temperature;
+
+        document.getElementById("temperature").textContent = `${temp.toFixed(2)} °C`;
+
+        const logo = document.getElementById("logo");
+        logo.src = temp > 25 ? "logo-verde.png" : "logo-rojo.png";
+
+      } catch (error) {
+        document.getElementById("temperature").textContent = "Error al obtener datos";
+        console.error("Error:", error);
+      }
+    }
+
+    window.onload = getTemperature;
+    setInterval(getTemperature,10000); 
+// Actualiza cada 60 segundos
+  </script>
+  
+</body>
+</html>
