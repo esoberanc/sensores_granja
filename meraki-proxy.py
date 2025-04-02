@@ -5,22 +5,9 @@ import requests
 app = Flask(__name__)
 CORS(app)  # Habilita CORS
 
-MERAKI_API_KEY = os.environ.get("MERAKI_API_KEY", "TU_API_KEY")
-ORG_ID = os.environ.get("ORGANIZATION_ID", "TU_ORG_ID")
-SENSOR_SERIAL = os.environ.get("SENSOR_SERIAL", "TU_SENSOR_SERIAL")
-
-MERAKI_API_URL = f"https://api.meraki.com/api/v1/organizations/{ORG_ID}/sensor/readings/latest"
-
-HEADERS = {
-    
-"X-Cisco-Meraki-API-Key"
-: MERAKI_API_KEY,
-    
-"Content-Type"
-: 
-"application/json"
-
-}
+MERAKI_API_KEY = "9290a4d061c3c77a15978928b4eb8ff119b4aec2"
+ORGANIZATION_ID = "1654515"
+SENSOR_SERIAL = "Q3CA-AT85-YJMB"
 
 @app.route("/sensor-data")
 def get_sensor_data():
